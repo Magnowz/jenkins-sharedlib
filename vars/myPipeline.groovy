@@ -1,16 +1,24 @@
-// vars/myPipeline.groovy
-
-def call() {
+def call(Map config = [:]) {
     pipeline {
         agent any
         parameters {
-            stashedFile 'script.jmx'
+            // Define um parâmetro para carregar o arquivo JMX stashed
+            stashedFile(config.scriptName ?: 'script.jmx')
         }
         stages {
             stage('Ler jmx') {
                 steps {
-                    unstash 'script.jmx'
-                    sh 'sleep 300'
+                    script {
+                        // Descompacta o arquivo stashed
+                        unstash config.scriptName ?: 'script.jmx'
+
+                        // Executa algum comando (exemplo: sleep)
+                        if (config.command) {
+                            sh config.command
+                        } else {
+                            echo "Nenhum comando específico foi configurado."
+                        }
+                    }
                 }
             }
         }
@@ -22,7 +30,7 @@ def call() {
                 echo "Executado quando o build falha."
             }
             aborted {
-                echo "Abortado"
+                echo "Executado quando o build foi abortado."
             }
         }
     }

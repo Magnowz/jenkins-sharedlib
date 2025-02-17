@@ -11,7 +11,7 @@ def call(Map config = [:]) {
                     script {
                         // Descompacta o arquivo stashed
                         unstash config.scriptName ?: 'script.jmx'
-
+                        sh 'cat script.jmx'    
                         // Executa algum comando (exemplo: sleep)
                         if (config.command) {
                             sh config.command

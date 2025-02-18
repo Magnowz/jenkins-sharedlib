@@ -8,7 +8,7 @@ def call(Map config = [:]) {
             stage('Ler jmx') {
                 steps {
                     script {
-                        currentBuild.displayName  = ${env.BUILD_NUMBER}-teste-api
+                        currentBuild.displayName  = "${env.BUILD_NUMBER}-teste-api"
                         unstash config.scriptName ?: 'script.jmx'
                         sh 'cat script.jmx'    
                         if (config.command) {

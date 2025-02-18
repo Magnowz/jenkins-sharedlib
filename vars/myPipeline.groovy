@@ -1,6 +1,9 @@
 def call(Map config = [:]) {
     pipeline {
         agent any
+        environment {
+        CUSTOM_BUILD_ID = "${env.BUILD_NUMBER}-custom" // Essa interpolação pode não funcionar como esperado aqui
+        }
         parameters {
             stashedFile(config.scriptName ?: 'script.jmx')
         }

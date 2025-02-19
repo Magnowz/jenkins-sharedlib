@@ -23,6 +23,9 @@ def call(Map config = [:]) {
             }
         }
         post {
+            always {
+                echo "teste"
+            }
             success {
                 echo "Executado quando o build termina com sucesso."
             }

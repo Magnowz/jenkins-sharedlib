@@ -13,8 +13,8 @@ def call(Map config = [:]) {
                         //sh 'sleep 60'
                         //sh 'cat script.jmx'   
                         //sh "jmeter -n -t script.jmx -l report${env.BUILD_NUMBER}.jtl -g -o report${env.BUILD_NUMBER}"
-                        sh "jmeter -n -t script.jmx -l report${env.BUILD_NUMBER}.jtl -e -o report${env.BUILD_NUMBER}}"
-                        //sh "zip -r report${env.BUILD_NUMBER}.zip report${env.BUILD_NUMBER}"
+                        sh "jmeter -n -t script.jmx -l report${env.BUILD_NUMBER}.jtl -e -o report${env.BUILD_NUMBER}"
+                        sh "zip -r report${env.BUILD_NUMBER}.zip report${env.BUILD_NUMBER}"
                         if (config.command) {
                             sh config.command
                         } else {

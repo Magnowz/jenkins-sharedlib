@@ -3,12 +3,13 @@ def call(Map config = [:]) {
         agent any
         parameters {
             stashedFile(config.scriptName ?: 'script.jmx')
+            string(name: 'executionId', defaultValue: '', description: 'ID de execução')
         }
         stages {
             stage('Ler jmx') {
                 steps {
                     script {
-                       currentBuild.displayName  = "#${env.BUILD_NUMBER} teste-api 1.0.1 - 10000"
+                       currentBuild.displayName  = "#${env.BUILD_NUMBER} ${params.executionId} - 10000"
                         unstash config.scriptName ?: 'script.jmx'
                         //sh 'sleep 60'
                         //sh 'cat script.jmx'   

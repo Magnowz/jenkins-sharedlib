@@ -31,7 +31,7 @@ def call(Map config = [:]) {
                             def totalPayload = groovy.json.JsonOutput.toJson(stats.Total)
                             
                             // Definir a URL da API (usa valor de env.API_URL ou valor padrão)
-                            def apiUrl = env.API_URL ?: "http://localhost:3000"
+                            def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
                             
                             // Enviar as métricas para a API
                             sh """

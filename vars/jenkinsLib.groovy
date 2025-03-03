@@ -43,33 +43,6 @@ def call(Map config = [:]) {
                             echo "Teste concluído com sucesso e resultados enviados."
                         } catch (Exception e) {
                             // Em caso de erro, envia status FAILED com payload fixo
-                            def apiUrl = env.API_URL ?: "http://localhost:3000"
-                            def failedPayload = """
-                            {
-                                "transaction": "Total",
-                                "sampleCount": 0,
-                                "errorCount": 1,
-                                "errorPct": 100,
-                                "meanResTime": 0,
-                                "medianResTime": 0,
-                                "minResTime": 0,
-                                "maxResTime": 0,
-                                "pct1ResTime": 0,
-                                "pct2ResTime": 0,
-                                "pct3ResTime": 0,
-                                "throughput": 0,
-                                "receivedKBytesPerSec": 0,
-                                "sentKBytesPerSec": 0,
-                                "status": "FAILED"
-                            }
-                            """
-                            
-                            sh """
-                                curl -X POST "${apiUrl}/test-executions/${params.executionId}/results" \\
-                                -H "Content-Type: application/json" \\
-                                -d '${failedPayload}'
-                            """
-                            
                             echo "Teste falhou: ${e.message}"
                             throw e
                         }
@@ -87,33 +60,6 @@ def call(Map config = [:]) {
             aborted {
                 script {
                     echo "Teste foi abortado."
-                    // Atualizar status para FAILED em caso de abort.
-                    def apiUrl = env.API_URL ?: "http://localhost:3000"
-                    def abortedPayload = """
-                    {
-                        "transaction": "Total",
-                        "sampleCount": 0,
-                        "errorCount": 1,
-                        "errorPct": 100,
-                        "meanResTime": 0,
-                        "medianResTime": 0,
-                        "minResTime": 0,
-                        "maxResTime": 0,
-                        "pct1ResTime": 0,
-                        "pct2ResTime": 0,
-                        "pct3ResTime": 0,
-                        "throughput": 0,
-                        "receivedKBytesPerSec": 0,
-                        "sentKBytesPerSec": 0,
-                        "status": "FAILED"
-                    }
-                    """
-                    
-                    sh """
-                        curl -X POST "${apiUrl}/test-executions/${params.executionId}/results" \\
-                        -H "Content-Type: application/json" \\
-                        -d '${abortedPayload}'
-                    """
                 }
             }
         }

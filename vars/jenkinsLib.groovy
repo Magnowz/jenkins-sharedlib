@@ -31,8 +31,8 @@ def call(Map config = [:]) {
                             def totalPayload = groovy.json.JsonOutput.toJson(stats.Total)
                             
                             // Definir a URL da API (usa valor de env.API_URL ou valor padrão)
-                            def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
-                            
+                            //def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
+                            def apiUrl = env.API_URL ?: "https://jmeter-api-production.up.railway.app"
                             // Enviar as métricas para a API
                             sh """
                                 curl -X POST "${apiUrl}/test-executions/${params.executionId}/results" \\

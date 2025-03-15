@@ -12,7 +12,7 @@ def call(Map config = [:]) {
                     script{
                         currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.executionId}"
                         sh """
-                                curl -X PATCH "${apiUrl}/test-executions/${params.executionId}/results" \\
+                                curl -X PATCH "${apiUrl}/test-executions/${params.executionId}/status" \\
                                 -H "Content-Type: application/json" \\
                                 -d '{ "status": "EXECUTANDO" }'
                          """

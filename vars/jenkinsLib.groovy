@@ -18,8 +18,8 @@ def call(Map config = [:]) {
                             }
                             def stats = readJSON file: "report${env.BUILD_NUMBER}/statistics.json"
                             def totalPayload = groovy.json.JsonOutput.toJson(stats.Total)
-                            //def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
-                            def apiUrl = env.API_URL ?: "https://jmeter-api-production.up.railway.app"
+                            def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
+                            //def apiUrl = env.API_URL ?: "https://jmeter-api-production.up.railway.app"
                             sh """
                                 curl -X POST "${apiUrl}/test-executions/${params.executionId}/results" \\
                                 -H "Content-Type: application/json" \\

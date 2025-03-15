@@ -1,4 +1,5 @@
 def call(Map config = [:]) {
+    def apiUrl = env.API_URL ?: "http://host.docker.internal:3000" 
     pipeline {
         agent any
         parameters {
@@ -6,10 +7,21 @@ def call(Map config = [:]) {
             string(name: 'executionId', defaultValue: '', description: 'ID de execução')
         }
         stages {
+            stage('Atualizando status da execução') {
+                steps {
+                    script{
+                        currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.executionId}"
+                        sh """
+                                curl -X PATCH "${apiUrl}/test-executions/${params.executionId}/results" \\
+                                -H "Content-Type: application/json" \\
+                                -d '{ "status": "EXECUTANDO" }'
+                         """
+                    }
+                }
+            }
             stage('Executar Teste e Enviar Métricas') {
                 steps {
                     script {
-                        currentBuild.displayName = "#${env.BUILD_NUMBER} ${params.executionId}"
                         unstash config.scriptName ?: 'script.jmx'
                         try {
                             sh "jmeter -n -t script.jmx -l report${env.BUILD_NUMBER}.jtl -e -o report${env.BUILD_NUMBER}"
@@ -18,7 +30,7 @@ def call(Map config = [:]) {
                             }
                             def stats = readJSON file: "report${env.BUILD_NUMBER}/statistics.json"
                             def totalPayload = groovy.json.JsonOutput.toJson(stats.Total)
-                            def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
+                            //def apiUrl = env.API_URL ?: "http://host.docker.internal:3000"
                             //def apiUrl = env.API_URL ?: "https://jmeter-api-production.up.railway.app"
                             sh """
                                 curl -X POST "${apiUrl}/test-executions/${params.executionId}/results" \\
@@ -38,12 +50,20 @@ def call(Map config = [:]) {
         post {
             failure {
                 script {
-                    echo "Teste falhou."
+                    sh """
+                                curl -X PATCH "${apiUrl}/test-executions/${params.executionId}/results" \\
+                                -H "Content-Type: application/json" \\
+                                -d '{ "status": "FALHA" }'
+                         """
                 }
             }
             aborted {
                 script {
-                    echo "Teste foi abortado."
+                    sh """
+                                curl -X PATCH "${apiUrl}/test-executions/${params.executionId}/results" \\
+                                -H "Content-Type: application/json" \\
+                                -d '{ "status": "ABORTADO" }'
+                         """
                 }
             }
         }

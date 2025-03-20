@@ -1,5 +1,5 @@
 def call(Map config = [:]) {
-    def apiUrl = env.API_URL ?: "https://jmeter-api-production.up.railway.app" 
+    def apiUrl = env.API_URL ?: "https://jmeter-api-production-661f.up.railway.app" 
     pipeline {
         agent any
         parameters {
